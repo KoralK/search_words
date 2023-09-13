@@ -16,9 +16,13 @@ def search_file_content(term, root_dir=os.path.expanduser("~")):
     for root, dirs, files in os.walk(root_dir):
         for filename in files:
             file_path = os.path.join(root, filename)
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                if term.lower() in f.read().lower():
-                    matches.append(file_path)
+            if os.path.exists(file_path):  # Check if the file exists before opening
+                try:
+                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        if term.lower() in f.read().lower():
+                            matches.append(file_path)
+                except Exception as e:  # Catch any other unexpected errors while reading
+                    print(f"Error reading {file_path}: {e}")
     return matches
 
 # Streamlit UI
